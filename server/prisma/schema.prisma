@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//=========================================
+
+model User {
+  id               String    @id @default(uuid())
+  username         String?
+  email            String    @unique
+  avatar           String?
+  // relations
+  //friends  User[] @relation("friends")
+  //friend   User   @relation("friends", fields: [friendId], references: [id])
+  //friendId String
+  messagesSent     Message[] @relation("sender")
+  messagesReceived Message[] @relation("recipient")
+  //friends          Friendship[] @relation("sender")
+  //friendsOf        Friendship[] @relation("recipient")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  // user has many Chats
+  chats            Chat[]
+}
+
+// many to many 
+//model Friendship {
+//id          String   @id @default(uuid())
+//sender      User     @relation("sender", fields: [senderId], references: [id])
+//senderId    String
+// recipient   User     @relation("recipient", fields: [recipientId], references: [id])
+//recipientId String
+//createdAt   DateTime @default(now())
+//updatedAt   DateTime @updatedAt
+//userId      String?
+//}
+
+model Chat {
+  id          String    @id @default(uuid())
+  chatName    String?
+  isGroupChat Boolean   @default(false)
+  // chat has many users
+  users       User[]
+  messages    Message[]
+  //latestMessage string
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Message {
+  id          String   @id @default(uuid())
+  text        String
+  // if: message is seen by recipient
+  hasSeen     Boolean  @default(false)
+  image       String?
+  //emojis      String[]
+  sender      User?    @relation("sender", fields: [senderId], references: [id])
+  senderId    String?
+  recipient   User?    @relation("recipient", fields: [recipientId], references: [id])
+  recipientId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Chat        Chat?    @relation(fields: [chatId], references: [id])
+  chatId      String?
+}
