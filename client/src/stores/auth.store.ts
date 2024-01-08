@@ -94,6 +94,6 @@ const useAuthStore = create<any>((set: any, get: any) => ({
   },
 }))
 
-const unsub = useAuthStore.subscribe((s: any) => console.log(`useAuthStore has been updated!!`, s));
+//const unsub = useAuthStore.subscribe((s: any) => console.log(`useAuthStore has been updated!!`, s));
 
 export default useAuthStore

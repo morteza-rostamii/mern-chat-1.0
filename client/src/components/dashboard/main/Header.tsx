@@ -22,7 +22,7 @@ const Header = ({
   useEffect(() => {
     if (currRecipient) {
       const online = onlines.some((userId:any) => (currRecipient as any).id === userId);
-      console.log(online);
+      //console.log(online);
       setIsOnline(online);
     }
   }, [onlines, currRecipient]);

@@ -34,13 +34,13 @@ const useChatStore = create<any>((set:any, get:any) => ({
 
   // add new message to it's chat
   addMessageToChatAct(message: any) {
-    console.log('--- set message to chat.messages');
+    //console.log('--- set message to chat.messages');
     // find the chat:
     const chat: any = get().chats.find((chat:any) => {
       return chat.id === message.chatId;
     });
 
-    console.log(chat);
+    //console.log(chat);
     // add message to chat.message
     chat.messages = [...chat.messages, message];
 
@@ -72,6 +72,6 @@ const useChatStore = create<any>((set:any, get:any) => ({
   },
 }));
 
-const unsub = useChatStore.subscribe((s: any) => console.log(`useChatStore has been updated!!`, s));
+//const unsub = useChatStore.subscribe((s: any) => console.log(`useChatStore has been updated!!`, s));
 
 export default useChatStore

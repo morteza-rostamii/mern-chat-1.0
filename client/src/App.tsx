@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 //import viteLogo from '/vite.svg'
 import './App.css'
 import { Button } from '@chakra-ui/react'
-import { Navigate, Route, Routes } from 'react-router'
+import { Navigate, Route, Routes, useLocation } from 'react-router'
 import DefaultLayout from './layouts/DefaultLayout'
 import Dashboard from './pages/Dashboard'
 import Register from './pages/Register'
@@ -23,6 +23,8 @@ function App() {
   const {setSocket, socketio} = useMsgStore();
   const {addMessageToChatAct, } = useChatStore();
 
+  const location = useLocation();
+
   //const socket_url = import.meta.env.SOCKET_URL || 'ws://localhost:8080';
 
   const socketRef: any = useRef(null);
@@ -39,7 +41,14 @@ function App() {
 
   useEffect(() => {
     // socket.io
-    if (!authUser) return () => {}; 
+    if (!authUser) {
+      if (socketRef?.current) {
+        // once logged out => remove the socket
+        socketRef.current.close();
+        setSocket(null);
+      }
+      return;
+    }
 
     if (socketRef.current) return;
 
@@ -113,11 +122,9 @@ function App() {
     //socketRef.current.disconnect();
 
     //socket.open();
-    
-    
-
+    console.log(location);
     //return () => socket.close();
-  }, []);
+  }, [location, authUser]);
 
   useEffect(() => {
     setSocket(socketRef.current);

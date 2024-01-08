@@ -36,8 +36,13 @@ const Chat = ({
 
   useEffect(() => {
     if (chatRecipient) {
+      /* console.log(
+        onlines,
+        chatRecipient,
+      ) */
+      //console.log('----------$$');
       const online = onlines.some((userId:any) => (chatRecipient as any).id === userId);
-      console.log(online);
+      //console.log(online);
       setIsOnline(online);
     }
   }, [onlines, chatRecipient]);
@@ -91,7 +96,6 @@ const Chat = ({
         }
       </div>
       
-
       <div
       className='
       text-left
