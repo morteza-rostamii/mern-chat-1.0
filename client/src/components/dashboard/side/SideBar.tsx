@@ -50,7 +50,7 @@ const SideBar = ({
       //flexShrink: 1,
       flexShrink: 0,
       //flexBasis: 0,
-      flexBasis: sideOpen ? '40%' : 0,
+      flexBasis: sideOpen ? '35%' : 0,
       transition: 'all .3s',
     }}
     >

@@ -13,7 +13,7 @@ import { TOKEN, USER } from "../consts/const";
 // allow server to set cookies
 axios.defaults.withCredentials = true;
 
-const BASE = 'http://localhost:3000/';
+const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/';
 
 const api = {
   

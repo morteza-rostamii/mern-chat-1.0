@@ -18,9 +18,9 @@ import prisma from './config/prisma';
 
 dotenv.config();
 const app = express();
-const PORT = 3000;
+const PORT = process.env.NODE_PORT || 3000;
 
-// public static files
+// public s tatic files
 app.use(express.static(path.join(process.cwd(), 'public')));
 
 app.use(express.json());
@@ -29,7 +29,7 @@ app.use(cookieParser());
 
 app.use(cors({
   //origin: '*',
-  origin: 'http://localhost:5173', 
+  origin: process.env.CLIENT_URL || 'http://localhost:5173', 
   //methods: 
   credentials: true,
 }));
@@ -41,7 +41,7 @@ app.use('/auth', authRouter);
 app.get('*', (req: Request, res: Response, next: NextFunction) => {
   //res.send('Hello, Express with TypeScript!');
 
-  const error: any = new Error('Custom Error');
+  const error: any = new Error('Custom Error: ' + process.env.JWT_SECRET);
   error.statusCode = 404;
 
   // Pass the error to the next middleware
@@ -223,44 +223,3 @@ ws.on('connection', async (socket:any) => {
     //socket.disconnect();
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// websocket
-/* const wss = new WebSocket.Server({port: 8080});
-
-// on socket connection
-wss.on('connection', (ws: WebSocket) => {
-  console.log('new client connected ',);
-
-  // client message
-  ws.on('message', (message: string) => {
-    console.log(`client says: ${message}`);
-    //ws.send(`server says: ${message}`);
-
-    // send message to all clients
-    wss.clients.forEach((client) => {
-      client.send(`server received message: ${message}`);
-    });
-  });
-
-  // on connection close
-  ws.on('close', () => {
-    console.log('client disconnected');
-  });
-}); */
