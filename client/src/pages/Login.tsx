@@ -22,17 +22,15 @@ const Login = () => {
         // callback
         (data: any) => {
         // store user in localStorage
-        console.log('boobs--', data)
+        console.log('login--yeh!! ', data);
         const userStr: string = JSON.stringify(data.user);
         localStorage.setItem(USER, userStr);
-
+          
         setAuthUser(localStorage.getItem(USER) ? JSON.parse(localStorage.getItem(USER) as string) : null);
         
         // redirect to dashboard
         navigate(DASHBOARD_ROUTE);
       });
-
-      console.log(data);
     }
 
     loginToken();

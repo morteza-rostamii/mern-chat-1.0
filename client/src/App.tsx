@@ -22,7 +22,7 @@ function App() {
   const {authUser, setAuthUser, currRecipient, setOnlineClients} = useAuthStore();
   const {setSocket, socketio} = useMsgStore();
   const {addMessageToChatAct, } = useChatStore();
-
+  const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/';
   const location = useLocation();
 
   //const socket_url = import.meta.env.SOCKET_URL || 'ws://localhost:8080';
@@ -52,11 +52,11 @@ function App() {
 
     if (socketRef.current) return;
 
-    console.log('opening socket.............')
-    socketRef.current = io('http://localhost:3000', {
+    //console.log('opening socket.............')
+    socketRef.current = io(BASE, {
       withCredentials: true,
       extraHeaders: {
-        'Access-Control-Allow-Origin': 'http://localhost:5173',
+        'Access-Control-Allow-Origin': 'http://localhost:3002',
       },
       auth: {
         userId: authUser.id,

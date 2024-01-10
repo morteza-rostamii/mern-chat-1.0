@@ -6,6 +6,7 @@ import { TEmailDetails } from '../types/types';
 */
 
 // mailer object
+console.log(process.env.EMAIL_PASSWORD);
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   host: 'smtp.gmail.com',

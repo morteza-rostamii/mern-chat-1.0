@@ -49,7 +49,7 @@ const authController = {
       const token = generateJwt(user);
 
       // create magic-link
-      const url = process.env.NODE_ENV === DEVELOPMENT ? process.env.CLIENT_URL_DEV || 'http://localhost:3002' : process.env.CLIENT_URL_PRO;
+      const url = process.env.NODE_ENV === DEVELOPMENT ? process.env.CLIENT_URL_DEV || 'http://localhost:3002' : process.env.CLIENT_VPS_URL;
       const magicLink = `${url}/login?token=${token}`;
 
       // send email
@@ -58,7 +58,7 @@ const authController = {
       const options: TEmailDetails = {
         from: 'hotshotfellow@gmail.com',
         //to: user.email,
-        to: 'morteza.rostami.55b@gmail.com',
+        to: process.env.NODE_ENV === DEVELOPMENT ? 'morteza.rostami.55b@gmail.com' : user.email,
         subject: 'chat--app: login magic link',
         text: magicLink,
         html: `
@@ -91,13 +91,13 @@ const authController = {
         });
       }
 
-      //sendEmail(options, callback);
+      sendEmail(options, callback);
 
-      return res.status(statusCodes.successResource).json({
+      /* return res.status(statusCodes.successResource).json({
         msg: 'magic-link was sent to your email!',
         success: true,
         user: user,
-      });
+      }); */
     }, next, prisma);
   },
 

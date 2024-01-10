@@ -7,6 +7,7 @@ import api from '../../routes/api';
 import toast from 'react-hot-toast';
 import validateEmail from '../../utils/validateEmail';
 import isWhitespace from '../../utils/checkWhitespace';
+import LoadScreen from '../LoadScreen';
 
 const toastNoUsername = () => toast.error('Enter an username', {
   duration: 4000,
@@ -22,6 +23,7 @@ const SignupForm = ({
     username: '',
     email: '',
   });
+  const [loading, setLoading] = useState(false);
 
   function handInputChange(e: any) {
     setFormDate((c: TSignupFormData) => ({
@@ -39,10 +41,12 @@ const SignupForm = ({
     if (!email || !validateEmail(email)) return toastNoEmail();
 
     // auth/register
+    setLoading(true);
     const response: any | null = await api.register(formData);
 
     if (response?.success) {
-      console.log(response);
+      //console.log(response);
+      setLoading(false);
       goLogin();
     }
   }
@@ -54,6 +58,7 @@ const SignupForm = ({
     <form
     className='
     flex flex-col gap-6 
+    relative
     bg-white p-6 rounded-md shadow-md
     '
 
@@ -114,6 +119,12 @@ const SignupForm = ({
       >
         signup
       </Button>
+
+      {
+        loading ?(
+          <LoadScreen/>
+        ): ''
+      }
     </form>
   )
 }

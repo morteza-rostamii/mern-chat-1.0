@@ -41,7 +41,7 @@ app.use('/auth', authRouter);
 app.get('*', (req: Request, res: Response, next: NextFunction) => {
   //res.send('Hello, Express with TypeScript!');
 
-  const error: any = new Error('Custom Error: ' + process.env.JWT_SECRET);
+  const error: any = new Error('Custom Error: ');
   error.statusCode = 404;
 
   // Pass the error to the next middleware
