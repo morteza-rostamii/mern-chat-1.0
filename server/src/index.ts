@@ -13,12 +13,12 @@ import fs from 'fs'
 import messagesRouter from './modules/messages/messages.routes'
 import authRouter from './modules/auth/auth.routes'
 import path from 'path';
-import { CLIENT_SENT_MSG, DEVELOPMENT, EVENT_ONLINE_CLIENTS, SERVER_SENT_MSG } from './consts/const';
+import { CLIENT_SENT_MSG, CLIENT_URL, DEVELOPMENT, EVENT_ONLINE_CLIENTS, SERVER_SENT_MSG } from './consts/const';
 import prisma from './config/prisma';
 
 dotenv.config();
 const app = express();
-const PORT = process.env.NODE_PORT || 3000;
+const PORT = process.env.NODE_PORT || 3001;
 
 // public s tatic files
 app.use(express.static(path.join(process.cwd(), 'public')));
@@ -29,7 +29,7 @@ app.use(cookieParser());
 
 app.use(cors({
   //origin: '*',
-  origin: process.env.NODE_ENV === DEVELOPMENT ? process.env.CLIENT_URL || 'http://localhost:3002' : process.env.CLIENT_URL_PRO, 
+  origin: CLIENT_URL, 
   //methods: 
   credentials: true,
 }));

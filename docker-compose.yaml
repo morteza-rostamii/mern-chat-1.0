@@ -50,7 +50,7 @@ services:
       - JWT_SECRET=e9gol328jw29n2gggbr9cin4
       - CLIENT_URL_DEV=http://localhost:3002
       - CLIENT_URL_PRO=http://localhost:3002
-      - CLIENT_VPS_URL=http://103.215.222.142:3002
+      - CLIENT_VPS_URL=http://135.125.228.180:3002
       - NODE_PORT=3001
       - EMAIL_PASSWORD=zyps sqal ytto prog
     networks:
@@ -71,7 +71,10 @@ services:
     ports:
       - "3002:3002"
     environment:
+      - VITE_NODE_ENV=production
       - VITE_API_URL=http://localhost:3001/
+      - VITE_API_URL_PRO=http://135.125.228.180:3001/
+      - VITE_CLIENT_URL_PRO=http://135.125.228.180:3002
     networks:
       - app-network
       

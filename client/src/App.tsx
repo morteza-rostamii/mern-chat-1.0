@@ -10,7 +10,7 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import api from './routes/api'
 import useAuthStore from './stores/auth.store'
-import { DASHBOARD_ROUTE, EVENT_ONLINE_CLIENTS, LOGIN_ROUTE, REGISTER_ROUTE, SERVER_SENT_MSG, USER } from './consts/const'
+import { DASHBOARD_ROUTE, DEVELOPMENT, EVENT_ONLINE_CLIENTS, LOGIN_ROUTE, REGISTER_ROUTE, SERVER_SENT_MSG, USER } from './consts/const'
 import useMsgStore from './stores/msgs.store'
 import io from 'socket.io-client'
 import useChatStore from './stores/chat.store'
@@ -22,7 +22,8 @@ function App() {
   const {authUser, setAuthUser, currRecipient, setOnlineClients} = useAuthStore();
   const {setSocket, socketio} = useMsgStore();
   const {addMessageToChatAct, } = useChatStore();
-  const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/';
+  const BASE = import.meta.env.VITE_NODE_ENV === DEVELOPMENT ? import.meta.env.VITE_API_URL || 'http://localhost:3001/' : import.meta.env.VITE_API_URL_PRO;
+  const CLIENT = import.meta.env.VITE_NODE_ENV === DEVELOPMENT ? 'http://localhost:3002' : import.meta.env.VITE_CLIENT_URL_PRO;
   const location = useLocation();
 
   //const socket_url = import.meta.env.SOCKET_URL || 'ws://localhost:8080';
@@ -56,7 +57,7 @@ function App() {
     socketRef.current = io(BASE, {
       withCredentials: true,
       extraHeaders: {
-        'Access-Control-Allow-Origin': 'http://localhost:3002',
+        'Access-Control-Allow-Origin': CLIENT,
       },
       auth: {
         userId: authUser.id,

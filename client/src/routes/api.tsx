@@ -1,6 +1,6 @@
 import axios from "axios";
 import { TAddFriendInput, TGetChatsPayload, TLoginResponse, TRegisterFormData, TRegisterResponse, TSearchUsersInput } from "../types/types";
-import { TOKEN, USER } from "../consts/const";
+import { DEVELOPMENT, TOKEN, USER } from "../consts/const";
 
 /* const Axios = axios.create({
   baseURL: 'http://localhost:3000/',
@@ -13,7 +13,7 @@ import { TOKEN, USER } from "../consts/const";
 // allow server to set cookies
 axios.defaults.withCredentials = true;
 
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/';
+const BASE = import.meta.env.VITE_NODE_ENV === DEVELOPMENT ? import.meta.env.VITE_API_URL || 'http://localhost:3001/' : import.meta.env.VITE_API_URL_PRO;
 
 const api = {
   

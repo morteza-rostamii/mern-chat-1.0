@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { handSyncError } from "../../middlewares/handErrors.mid";
 import prisma from "../../config/prisma";
-import { DEVELOPMENT, JWT_TOKEN_COOKIE_NAME, PRODUCTION, statusCodes } from "../../consts/const";
+import { CLIENT_URL, DEVELOPMENT, JWT_TOKEN_COOKIE_NAME, PRODUCTION, statusCodes } from "../../consts/const";
 import { generateJwt } from "../../utils/jwt";
 import jwt from 'jsonwebtoken'
 import path from "path";
@@ -49,7 +49,7 @@ const authController = {
       const token = generateJwt(user);
 
       // create magic-link
-      const url = process.env.NODE_ENV === DEVELOPMENT ? process.env.CLIENT_URL_DEV || 'http://localhost:3002' : process.env.CLIENT_VPS_URL;
+      const url = CLIENT_URL;
       const magicLink = `${url}/login?token=${token}`;
 
       // send email
