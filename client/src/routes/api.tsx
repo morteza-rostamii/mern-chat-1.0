@@ -14,7 +14,7 @@ import { DEVELOPMENT, TOKEN, USER } from "../consts/const";
 axios.defaults.withCredentials = true;
 
 const BASE = import.meta.env.VITE_NODE_ENV === DEVELOPMENT ? import.meta.env.VITE_API_URL || 'http://localhost:3001/' : import.meta.env.VITE_API_URL_PRO;
-
+console.log(BASE);
 const api = {
   
   // POST: /auth/register
