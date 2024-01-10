@@ -5,6 +5,8 @@ import { DEVELOPMENT, JWT_TOKEN_COOKIE_NAME, PRODUCTION, statusCodes } from "../
 import { generateJwt } from "../../utils/jwt";
 import jwt from 'jsonwebtoken'
 import path from "path";
+import { sendEmail } from "../../utils/sendEmail";
+import { TEmailDetails } from "../../types/types";
 
 const jwt_secret = process.env.JWT_SECRET || '';
 const oneDayInMilliseconds = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
@@ -24,7 +26,7 @@ const authController = {
         msg: 'email and password missing!',
       })
       
-      let user = null;
+      let user: any = null;
 
       // check if user already exists
       user = await prisma.user.findFirst({
@@ -43,15 +45,53 @@ const authController = {
         });
       }
 
-      console.log('---**', user)
       // generate jwt token
       const token = generateJwt(user);
 
       // create magic-link
-      const magicLink = `http://localhost:5173/login?token=${token}`;
+      const url = process.env.NODE_ENV === DEVELOPMENT ? process.env.CLIENT_URL_DEV || 'http://localhost:3002' : process.env.CLIENT_URL_PRO;
+      const magicLink = `${url}/login?token=${token}`;
 
       // send email
       console.log('magic-link: ', magicLink);
+
+      const options: TEmailDetails = {
+        from: 'hotshotfellow@gmail.com',
+        //to: user.email,
+        to: 'morteza.rostami.55b@gmail.com',
+        subject: 'chat--app: login magic link',
+        text: magicLink,
+        html: `
+        
+        <div
+        style="padding: 10px; display: flex; flex-direction: column; gap: 10px;"
+        >
+          <h2>
+          hi! this is form chat-app:
+          </h2>
+          <h3>
+          please, click the bellow link to login to our app! 
+          </h3>
+
+          <p 
+          style="background: lightgray; padding: 5px;">
+          ${magicLink}
+          </p>
+        </div>
+        
+        `
+      }
+
+      const callback = (response: any) => {
+        return res.status(statusCodes.successResource).json({
+          msg: 'magic-link was sent to your email!',
+          success: true,
+          user: user,
+          response: response,
+        });
+      }
+
+      //sendEmail(options, callback);
 
       return res.status(statusCodes.successResource).json({
         msg: 'magic-link was sent to your email!',

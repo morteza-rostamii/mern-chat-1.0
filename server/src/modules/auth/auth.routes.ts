@@ -1,5 +1,6 @@
 import express from "express";
 import authController from "./auth.controller";
+import { authenticateToken } from "../../utils/jwt";
 
 const router = express.Router();
 
@@ -22,21 +23,21 @@ router
 // POST: /auth/search-users
 router
   .route('/search-users')
-  .post(authController.searchUsers);
+  .post(authenticateToken, authController.searchUsers);
 
 // add friends
 router
   .route('/add-friend')
-  .post(authController.addFriend)
+  .post(authenticateToken, authController.addFriend)
 
 // get all friends
 router
   .route('/friends')
-  .post(authController.getFriends)
+  .post(authenticateToken, authController.getFriends)
 
 // /auth/logout
 router
   .route('/logout')
-  .post(authController.logout);
+  .post(authenticateToken, authController.logout);
 
 export default router 

@@ -6,3 +6,11 @@ export type TUser = {
   createdAt: string,
   updatedAt: string,
 };
+
+export type TEmailDetails = {
+  from: string,
+  to: string,
+  subject: string,
+  text: string,
+  html: any,
+};

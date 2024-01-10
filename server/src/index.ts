@@ -29,7 +29,7 @@ app.use(cookieParser());
 
 app.use(cors({
   //origin: '*',
-  origin: process.env.CLIENT_URL || 'http://localhost:5173', 
+  origin: process.env.NODE_ENV === DEVELOPMENT ? process.env.CLIENT_URL || 'http://localhost:3002' : process.env.CLIENT_URL_PRO, 
   //methods: 
   credentials: true,
 }));

@@ -18,7 +18,7 @@ router
 // POST: /messages
 router
   .route('/')
-  .post(upload.single('image'), messagesController.create);
+  .post(authenticateToken, upload.single('image'), messagesController.create);
 
 // UPDATE: /messages/:id
 router
