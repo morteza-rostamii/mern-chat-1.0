@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { handSyncError } from "../../middlewares/handErrors.mid";
-import prisma from "../../config/prisma";
 import { CLIENT_URL, DEVELOPMENT, JWT_TOKEN_COOKIE_NAME, PRODUCTION, statusCodes } from "../../consts/const";
 import { generateJwt } from "../../utils/jwt";
 import jwt from 'jsonwebtoken'
 import path from "path";
 import { sendEmail } from "../../utils/sendEmail";
 import { TEmailDetails } from "../../types/types";
+import { prisma } from "../../index";
 
 const jwt_secret = process.env.JWT_SECRET || '';
 const oneDayInMilliseconds = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
@@ -91,13 +91,13 @@ const authController = {
         });
       }
 
-      sendEmail(options, callback);
+      //sendEmail(options, callback);
 
-      /* return res.status(statusCodes.successResource).json({
+      return res.status(statusCodes.successResource).json({
         msg: 'magic-link was sent to your email!',
         success: true,
         user: user,
-      }); */
+      });
     }, next, prisma);
   },
 
@@ -131,7 +131,8 @@ const authController = {
             token, 
             {
               httpOnly: true,
-              secure: process.env.NODE_ENV === PRODUCTION ? true : false,
+              //secure: process.env.NODE_ENV === PRODUCTION ? true : false,
+              secure: false,
              //maxAge: 3600000, // 1h
              //maxAge: 24 * 60 * 60 * 1000,
              //expires: new Date(Date.now() + 8 * 3600000), //8hours

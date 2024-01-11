@@ -44,7 +44,7 @@ services:
     # pass to .env file
     env_file: ./server/.env
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       # DO NOT USE : quotation mark !!!!!
       - DATABASE_URL=postgresql://morteza:love@postgres:5432/chat?schema=public
       - JWT_SECRET=e9gol328jw29n2gggbr9cin4
@@ -71,7 +71,7 @@ services:
     ports:
       - "3002:3002"
     environment:
-      - VITE_NODE_ENV=production
+      - VITE_NODE_ENV=development
       - VITE_API_URL=http://localhost:3001/
       - VITE_API_URL_PRO=http://135.125.228.180:3001/
       - VITE_CLIENT_URL_PRO=http://135.125.228.180:3002

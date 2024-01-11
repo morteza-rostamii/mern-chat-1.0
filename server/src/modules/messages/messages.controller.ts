@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { handSyncError } from "../../middlewares/handErrors.mid";
-import prisma from "../../config/prisma";
+import { prisma } from "../../index";
 
 const messagesController = {
 

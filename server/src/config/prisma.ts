@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+//import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+//const prisma = new PrismaClient();
 
 /* async function doPrisma() {
   await prisma.user.deleteMany({});
@@ -9,4 +9,4 @@ const prisma = new PrismaClient();
 
 doPrisma(); */
 
-export default prisma
+//export default prisma
