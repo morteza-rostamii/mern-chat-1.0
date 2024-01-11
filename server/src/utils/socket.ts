@@ -138,7 +138,7 @@ export function setupSocket(server: any, prisma: any): void {
 
       socket.join(roomName);
 
-      console.log('******^^::', socket, roomName);
+      console.log('******^^::', socket.handshake.auth.userId, roomName);
       socket.to(roomName).emit(SEND_MSG_TO_RECIPIENT, {
         msg: message,
       });
