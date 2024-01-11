@@ -127,11 +127,27 @@ export function setupSocket(server: any, prisma: any): void {
         return sock.handshake.auth.userId === recipientId;
       })
 
+      const roomName: string = senderId + recipientId;
+
       // send message to recipient
       recipientSockets.forEach((sock: any) => {
         console.log(`message to: ${sock.handshake.auth.userId}`)
-        sock.emit(SEND_MSG_TO_RECIPIENT, {msg: message});
+        //sock.emit(SEND_MSG_TO_RECIPIENT, {msg: message});
+        sock.join(roomName);
       });
+
+      socket.join(roomName);
+
+      socket.to(roomName).emit(SEND_MSG_TO_RECIPIENT, {
+        msg: message,
+      });
+
+      /* recipientSockets.forEach((sock: any) => {
+        console.log(`message to: ${sock.handshake.auth.userId}--`)
+        sock.to(roomName).emit(SEND_MSG_TO_RECIPIENT, {
+          msg: message,
+        });
+      }); */
 
       // callback
       cb(message);

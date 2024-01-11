@@ -42,11 +42,18 @@ const useChatStore = create<any>((set:any, get:any) => ({
 
     //console.log(chat);
     // add message to chat.message
-    chat.messages = [...chat.messages, message];
+
+    // remove repeated message
+    const noRepeated = chat.messages.filter((msg: any) => {
+      return msg.id !== message.id;
+    });
+
+    chat.messages = [...noRepeated, message];
 
     const chats: any[] = get().chats.filter((ch:any) => ch.id !== chat.id);
 
-    console.log('chats;;' , chats);
+    console.log('do me:: ', chat.messages);
+    //console.log('chats;;' , chats);
 
     set((s: any) => ({
       ...s,
