@@ -25,6 +25,7 @@ export const LOGIN_ROUTE = '/login';
 export const CLIENT_SENT_MSG = 'client-sent-msg';
 export const SERVER_SENT_MSG = 'server-sent-msg';
 export const EVENT_ONLINE_CLIENTS = 'event-online-clients';
+export const SEND_MSG_TO_RECIPIENT = 'send-msg-to-recipient';
 
 export const DEVELOPMENT = 'development';
 export const PRODUCTION = 'production';

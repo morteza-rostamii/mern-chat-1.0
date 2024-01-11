@@ -10,7 +10,7 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import api from './routes/api'
 import useAuthStore from './stores/auth.store'
-import { DASHBOARD_ROUTE, DEVELOPMENT, EVENT_ONLINE_CLIENTS, LOGIN_ROUTE, REGISTER_ROUTE, SERVER_SENT_MSG, USER } from './consts/const'
+import { DASHBOARD_ROUTE, DEVELOPMENT, EVENT_ONLINE_CLIENTS, LOGIN_ROUTE, REGISTER_ROUTE, SEND_MSG_TO_RECIPIENT, SERVER_SENT_MSG, USER } from './consts/const'
 import useMsgStore from './stores/msgs.store'
 import io from 'socket.io-client'
 import useChatStore from './stores/chat.store'
@@ -53,7 +53,6 @@ function App() {
 
     if (socketRef.current) return;
 
-    //console.log('opening socket.............')
     socketRef.current = io(BASE, {
       withCredentials: true,
       extraHeaders: {
@@ -70,60 +69,26 @@ function App() {
 
     // connection is on
     socketRef.current.on('connect', () => {
-      console.log(`connected with id: ${socketRef.current.id}`);
+      console.log(`connected with id: ${socketRef.current.id} : ${authUser.id}`);
 
-      // send a custom event
-      /* socket.emit('msg-sent', {
-        msg: `hello from user: ${socket.id}`,
-      }); */
-
-      /* socket.emit('msg-private-sent', {
-        msg: 'my first message!',
-        recipientId: currRecipient.id,
-      }); */
-
-      // listen for server event
-      socketRef.current.on('server-msg-sent', ({msg}: any) => {
-        console.log(msg);
-      });
-
-      socketRef.current.on('msg-received', ({msg}: any) => {
-        console.log(msg);
-    
-      });
-
-      // on server shut down -> not working!!
-      /* socketRef.current.on('disconnect', () => {
-        console.log('Disconnected from the server');
-        // Add your logic to handle disconnection here (e.g., showing a message)
-        socketRef.current.disconnect();
-      }); */
 
       // server received and created a new message to recipient
-      socketRef.current.on(SERVER_SENT_MSG, (msg: any) => {
+      /* socketRef.current.on(SERVER_SENT_MSG, (msg: any) => {
         console.log('******************************', msg);
+      }); */
+      // message to recipient
+      socketRef.current.on(SEND_MSG_TO_RECIPIENT, (msg: any) => {
+        console.log('---', msg)
+        addMessageToChatAct(msg.msg);
       });
+  
+      socketRef.current.on(EVENT_ONLINE_CLIENTS, ((data: any) => {
+        console.log('online clients:: ', data.onlines);
+        setOnlineClients(data.onlines);
+      }));
     });
-
-    // message to recipient
-    socketRef.current.on('msg', (msg: any) => {
-      console.log('---', msg)
-      addMessageToChatAct(msg.msg);
-    });
-
-    socketRef.current.on(EVENT_ONLINE_CLIENTS, ((data: any) => {
-      console.log('online clients:: ', data.onlines);
-      setOnlineClients(data.onlines);
-    }));
-
-    /* socketRef.current.on('love', (data: any) => {
-      console.log(data);
-    }) */
-    
-    //socketRef.current.disconnect();
 
     //socket.open();
-    console.log(location);
     //return () => socket.close();
   }, [location, authUser]);
 

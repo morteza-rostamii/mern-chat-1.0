@@ -2,7 +2,7 @@ import { writeFile } from 'fs';
 import {v4 as uuidv4} from 'uuid'
 import fs from 'fs'
 import {Server} from 'socket.io'
-import { CLIENT_SENT_MSG, DEVELOPMENT, EVENT_ONLINE_CLIENTS } from '../consts/const';
+import { CLIENT_SENT_MSG, DEVELOPMENT, EVENT_ONLINE_CLIENTS, SEND_MSG_TO_RECIPIENT } from '../consts/const';
 
 function writeFileToImagesDir(buffer: any, file: any) {
   console.log(file.type);
@@ -25,17 +25,14 @@ function getOnlineClients(clients: any[], socket:any) {
 
   // remove repeated ids
   const setClientsIds = new Set(clientsIds);
-  console.log('--', setClientsIds);
   socket.emit(EVENT_ONLINE_CLIENTS, {
     onlines: Array.from(setClientsIds),
   });
 }
 
+const onlineClients: any = [];
+
 export function setupSocket(server: any, prisma: any): void {
-  // socket io
-  //const SOCKET_PORT = process.env.SOCKET_PORT || 8080;
-
-
 
   // socket io instance
   const ws = new Server(server, {
@@ -44,23 +41,15 @@ export function setupSocket(server: any, prisma: any): void {
     }
   });
 
-  const onlineClients: any = [];
-
   // on connection
   ws.on('connection', async (socket:any) => {
-    console.log('a client connected ' + socket.id);
-    console.log(socket.handshake.auth.userId);
-    const auth = socket.handshake.auth.userId;
+    console.log('a client connected ' + socket.id, socket.handshake.auth.userId);
+    //const auth = socket.handshake.auth.userId;
     
     onlineClients.push(socket);
-    //console.log('conc: ', onlineClients.map((el:any) => ({sockId: el.id, userId: el.handshake.auth.userId})));
 
     // send online users to all users
     getOnlineClients(onlineClients, ws);
-
-    //ws.emit('love', {data: 'lover'});
-
-    //console.log('clients:: ', onlineClients);
 
     // on CLIENT_SENT_MSG
     socket.on(CLIENT_SENT_MSG, async (payload: any, cb: any) => {
@@ -72,8 +61,7 @@ export function setupSocket(server: any, prisma: any): void {
         recipientId,
       } = formData;
 
-      //console.log('received formData', JSON.parse(formData.image));
-      
+      // if: formData.image =: upload the image
       let filename = '';
       if (formData?.image) {
         const image = JSON.parse(formData.image);
@@ -89,7 +77,6 @@ export function setupSocket(server: any, prisma: any): void {
       
       // store image name in db
       // create message and add to chat 
-
       const chat = await prisma.chat.findFirst({
         where: {
           AND: [
@@ -131,23 +118,19 @@ export function setupSocket(server: any, prisma: any): void {
         message.image = HOSTNAME + 'images/' + message.image;
       } 
 
-      //console.log(message)
-
       // loop through all sockets and join the same room
       //const room = senderId + recipientId;
       
       // recipient's sockets
       const recipientSockets = onlineClients.filter((sock:any) => {
-        console.log(sock.handshake.auth.userId, recipientId)
+        //console.log(sock.handshake.auth.userId, recipientId)
         return sock.handshake.auth.userId === recipientId;
       })
-
-      //console.log('---recipient: ', recipientSockets)
 
       // send message to recipient
       recipientSockets.forEach((sock: any) => {
         console.log(`message to: ${sock.handshake.auth.userId}`)
-        sock.emit('msg', {msg: message})
+        sock.emit(SEND_MSG_TO_RECIPIENT, {msg: message});
       });
 
       // callback
@@ -164,15 +147,8 @@ export function setupSocket(server: any, prisma: any): void {
         onlineClients.splice(index, 1);
       }
 
-      //console.log('disc: ', onlineClients.map((el:any) => ({sockId: el.id, userId: socket.handshake.auth.userId})));
-
       // send online clients on disconnect
       getOnlineClients(onlineClients, ws);
-
-      /* if (onlineClients[userId]) {
-        onlineClients[userId] = onlineClients[userId].filter((s: any) => s !== socket);
-      } */
-      //socket.disconnect();
     });
   });
 }

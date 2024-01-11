@@ -15,5 +15,6 @@ export const statusCodes = {
 export const CLIENT_SENT_MSG = 'client-sent-msg';
 export const SERVER_SENT_MSG = 'server-sent-msg';
 export const EVENT_ONLINE_CLIENTS = 'event-online-clients';
+export const SEND_MSG_TO_RECIPIENT = 'send-msg-to-recipient';
 
 export const CLIENT_URL = process.env.NODE_ENV === DEVELOPMENT ? process.env.CLIENT_URL_DEV || 'http://localhost:3002' : process.env.CLIENT_VPS_URL;
