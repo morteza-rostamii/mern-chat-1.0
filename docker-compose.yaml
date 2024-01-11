@@ -44,13 +44,13 @@ services:
     # pass to .env file
     env_file: ./server/.env
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       # DO NOT USE : quotation mark !!!!!
       - DATABASE_URL=postgresql://morteza:love@postgres:5432/chat?schema=public
       - JWT_SECRET=e9gol328jw29n2gggbr9cin4
       - CLIENT_URL_DEV=http://localhost:3002
       - CLIENT_URL_PRO=http://localhost:3002
-      - CLIENT_VPS_URL=http://135.125.228.180:3002
+      - CLIENT_VPS_URL=http://213.217.31.106:3002
       - NODE_PORT=3001
       - EMAIL_PASSWORD=zyps sqal ytto prog
     networks:
@@ -71,10 +71,10 @@ services:
     ports:
       - "3002:3002"
     environment:
-      - VITE_NODE_ENV=development
+      - VITE_NODE_ENV=production
       - VITE_API_URL=http://localhost:3001/
-      - VITE_API_URL_PRO=http://135.125.228.180:3001/
-      - VITE_CLIENT_URL_PRO=http://135.125.228.180:3002
+      - VITE_API_URL_PRO=http://213.217.31.106:3001/
+      - VITE_CLIENT_URL_PRO=http://213.217.31.106:3002
     networks:
       - app-network
       
