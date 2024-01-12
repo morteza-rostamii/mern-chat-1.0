@@ -17,7 +17,7 @@ export function setupWebSocket(server: any): void {
     const cookies: string = req.headers.cookie;
     
     let token: string | null = '';
-    if (cookies) token = decodeCookieToken(cookies);
+    if (cookies) token = decodeCookieToken(cookies); 
 
     
     // send message to client
@@ -47,7 +47,7 @@ function decodeCookieToken(cookies: string): string | null {
   const tokenCookie: string | undefined = tokenCookies.find((str:string) => {
     str = str.trim();
     return str.startsWith('token=');
-  });
+  }); 
 
   if (!tokenCookie) return null; 
 

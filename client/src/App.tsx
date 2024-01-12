@@ -70,8 +70,7 @@ function App() {
 
     if (socketRef?.current) return;
 
-    socketRef.current = new WebSocket(SOCKET_URL);
-    setSocket(socketRef.current);
+    connectToWebSocket();
 
     console.log(socketRef.current);
 
@@ -100,9 +99,18 @@ function App() {
       socketio.addEventListener('close', (event: any) => {
         console.log('WebSocket Connection is closed:', event.code, event.reason);
         // Your code for handling connection closure
+        setTimeout(() => {
+          console.log('reconnect to the server!! ');
+          connectToWebSocket();
+        }, 1000);
       });
     }
   }, [socketio]);
+
+  function connectToWebSocket(): void {
+    socketRef.current = new WebSocket(SOCKET_URL);
+    setSocket(socketRef.current);
+  }
 
   /* useEffect(() => {
     setSocket(socketRef.current);
