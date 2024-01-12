@@ -25,8 +25,10 @@ const Login = () => {
         console.log('login--yeh!! ', data);
         const userStr: string = JSON.stringify(data.user);
         localStorage.setItem(USER, userStr);
-          
-        setAuthUser(localStorage.getItem(USER) ? JSON.parse(localStorage.getItem(USER) as string) : null);
+        
+        const localUser: any = localStorage.getItem(USER) ? JSON.parse(localStorage.getItem(USER) as string) : null;
+        console.log('local: ', localUser)
+        setAuthUser(localUser);
         
         // redirect to dashboard
         navigate(DASHBOARD_ROUTE);

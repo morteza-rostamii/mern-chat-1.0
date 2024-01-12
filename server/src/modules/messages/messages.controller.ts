@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { handSyncError } from "../../middlewares/handErrors.mid";
 import { prisma } from "../../index";
+import { DEVELOPMENT } from "../../consts/const";
+import { socketServer } from "../../utils/webSocket";
 
 const messagesController = {
 
@@ -55,15 +57,68 @@ const messagesController = {
         })
       }
 
+      // store image name in db
+      // create message and add to chat 
+      const chat = await prisma.chat.findFirst({
+        where: {
+          AND: [
+            {users: {some: {id: senderId}}},
+            {users: {some: {id: recipientId}}},
+          ],
+        }, 
+        include: {
+          users: true,
+          messages: true,
+        }
+      });
+
+      if (!chat) return;
+
+      // create message and save message in chat
+      const message: any = await prisma.message.create({
+        data: {
+          text: text,
+          senderId: senderId,
+          recipientId: recipientId,
+          image: filename || '',
+          // connect relation
+          chatId: chat?.id,
+        }, 
+        include: {Chat: true},
+      });
+
+      const HOSTNAME = 
+        process.env.NODE_ENV === DEVELOPMENT 
+        ? `${req.protocol}://${req.get('host')}/` 
+        : `${req.protocol}://${req.get('host')}/`
+
+      // edit msg url
+      if (message.image) {
+        message.image = HOSTNAME + 'images/' + message.image;
+      } 
+
+      // send socket message
+
+      // json-string message
+      const messageStr = JSON.stringify({
+        message: message,
+      });
+
+      if ([...socketServer?.clients]?.length) {
+        [...socketServer.clients]
+        .filter((c:any) => c.userId === recipientId)
+        .forEach((c:any) => c.send(messageStr));
+      }
+
       // create a message
-      const message = await prisma.message.create({
+      /* const message = await prisma.message.create({
         data: {
           text: text,
           image: filename,
           sender: {connect: {id: senderId}},
           recipient: {connect: {id: recipientId}},
         },
-      });
+      }); */
 
       return res.status(statusCode).json({
         msg: 'message created',

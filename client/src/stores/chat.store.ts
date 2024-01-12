@@ -34,7 +34,7 @@ const useChatStore = create<any>((set:any, get:any) => ({
 
   // add new message to it's chat
   addMessageToChatAct(message: any) {
-    //console.log('--- set message to chat.messages');
+    console.log('--- set message to chat.messages', message);
     // find the chat:
     const chat: any = get().chats.find((chat:any) => {
       return chat.id === message.chatId;

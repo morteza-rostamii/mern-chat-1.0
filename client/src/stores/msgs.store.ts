@@ -3,7 +3,7 @@ import type{ TMessage } from '../types/types';
 import { faker } from '@faker-js/faker';
 import api from '../routes/api';
 import useAuthStore from './auth.store';
-import { CLIENT_SENT_MSG } from '../consts/const';
+//import { CLIENT_SENT_MSG } from '../consts/const';
 import useChatStore from './chat.store';
 import toast from 'react-hot-toast';
 
@@ -47,12 +47,10 @@ const useMsgStore = create<any>((set:any, get:any) => ({
       }
 
       // object to json_str
-      const strPayload = JSON.stringify(payloadObj);
+      //const strPayload = JSON.stringify(payloadObj);
       
-      //console.log(strPayload)
-      // send message through socket
-      //console.log(get().socketio)
-      get().socketio.emit(
+      
+      /* get().socketio.emit(
         CLIENT_SENT_MSG, 
         strPayload, 
         // callback: after socket success
@@ -64,13 +62,20 @@ const useMsgStore = create<any>((set:any, get:any) => ({
         }, 500);
 
         toastMsgSuccess();
-      });
+      }); */
 
-      //const {data} = response;
+      const response = await api.createMsg(payload);
 
-      /* if (data?.success) {
+      const {data} = response;
+
+      if (data?.success) {
         console.log(data);
-      } */
+        useChatStore.getState().addMessageToChatAct(data.message);
+        setTimeout(() => {
+          useChatStore.getState().scrollDownChatContainerAct();
+        }, 500);
+        toastMsgSuccess();
+      }
 
     } catch(error: any) {
       console.log(error?.message, error);

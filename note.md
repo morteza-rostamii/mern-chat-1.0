@@ -127,6 +127,22 @@ npx prisma studio
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- 
 
 # database design:
@@ -168,3 +184,77 @@ model User {
 # many to many
 
  -->
+
+
+
+
+
+
+
+
+ <!-- 
+ 
+ // socket.io
+    if (!authUser) {
+      if (socketRef?.current) {
+        // once logged out => remove the socket
+        socketRef.current.close();
+        setSocket(null);
+      }
+      return;
+    }
+
+    if (socketRef.current) return;
+
+    socketRef.current = io(BASE, {
+      withCredentials: true,
+      extraHeaders: {
+        'Access-Control-Allow-Origin': CLIENT,
+      },
+      auth: {
+        userId: authUser.id,
+      },
+      transports : ['websocket'],
+      //reconnection: false,
+    });
+
+    setSocket(socketRef.current);
+
+    // connection is on
+    socketRef.current.on('connect', () => {
+      console.log(`connected with id: ${socketRef.current.id} : ${authUser.id}`);
+
+
+      // server received and created a new message to recipient
+      /* socketRef.current.on(SERVER_SENT_MSG, (msg: any) => {
+        console.log('******************************', msg);
+      }); */
+      // message to recipient
+      socketRef.current.on(SEND_MSG_TO_RECIPIENT, (msg: any) => {
+        console.log('---', msg)
+        addMessageToChatAct(msg.msg);
+      });
+  
+      socketRef.current.on(EVENT_ONLINE_CLIENTS, ((data: any) => {
+        console.log('online clients:: ', data.onlines);
+        setOnlineClients(data.onlines);
+      }));
+    });
+
+    //socket.open();
+    //return () => socket.close();
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  -->

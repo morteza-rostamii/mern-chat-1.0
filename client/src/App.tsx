@@ -10,7 +10,7 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import api from './routes/api'
 import useAuthStore from './stores/auth.store'
-import { DASHBOARD_ROUTE, DEVELOPMENT, EVENT_ONLINE_CLIENTS, LOGIN_ROUTE, REGISTER_ROUTE, SEND_MSG_TO_RECIPIENT, SERVER_SENT_MSG, USER } from './consts/const'
+import { DASHBOARD_ROUTE, DEVELOPMENT, LOGIN_ROUTE, NEW_MSG, REGISTER_ROUTE, SOCKET_URL, USER } from './consts/const'
 import useMsgStore from './stores/msgs.store'
 import io from 'socket.io-client'
 import useChatStore from './stores/chat.store'
@@ -22,13 +22,29 @@ function App() {
   const {authUser, setAuthUser, currRecipient, setOnlineClients} = useAuthStore();
   const {setSocket, socketio} = useMsgStore();
   const {addMessageToChatAct, } = useChatStore();
-  const BASE = import.meta.env.VITE_NODE_ENV === DEVELOPMENT ? import.meta.env.VITE_API_URL || 'http://localhost:3001/' : import.meta.env.VITE_API_URL_PRO;
+  
   const CLIENT = import.meta.env.VITE_NODE_ENV === DEVELOPMENT ? 'http://localhost:3002' : import.meta.env.VITE_CLIENT_URL_PRO;
   const location = useLocation();
 
   //const socket_url = import.meta.env.SOCKET_URL || 'ws://localhost:8080';
 
   const socketRef: any = useRef(null);
+
+  function handNewMessage(event: any): void {
+    //console.log(event.data);
+    const dataStr: string = event.data;
+    const data: any = JSON.parse(dataStr);
+    console.log(data);
+
+    // set online clients
+    if ('onlines' in data) setOnlineClients(data.onlines);
+
+    // get new message to recipient
+    if ('message' in data) {
+      console.log('recipient message: ', data);
+      addMessageToChatAct(data.message);
+    } 
+  }
 
   useEffect(() => {
     setAuthUser(localStorage.getItem(USER) ? JSON.parse(localStorage.getItem(USER) as string) : null)
@@ -41,61 +57,58 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // socket.io
+
+    // if: not authUser and there is a socket -: remove socket
     if (!authUser) {
-      if (socketRef?.current) {
-        // once logged out => remove the socket
+      if (socketRef.current) {
         socketRef.current.close();
         setSocket(null);
       }
+
       return;
     }
 
-    if (socketRef.current) return;
+    if (socketRef?.current) return;
 
-    socketRef.current = io(BASE, {
-      withCredentials: true,
-      extraHeaders: {
-        'Access-Control-Allow-Origin': CLIENT,
-      },
-      auth: {
-        userId: authUser.id,
-      },
-      transports : ['websocket'],
-      //reconnection: false,
-    });
-
+    socketRef.current = new WebSocket(SOCKET_URL);
     setSocket(socketRef.current);
 
-    // connection is on
-    socketRef.current.on('connect', () => {
-      console.log(`connected with id: ${socketRef.current.id} : ${authUser.id}`);
+    console.log(socketRef.current);
 
-
-      // server received and created a new message to recipient
-      /* socketRef.current.on(SERVER_SENT_MSG, (msg: any) => {
-        console.log('******************************', msg);
-      }); */
-      // message to recipient
-      socketRef.current.on(SEND_MSG_TO_RECIPIENT, (msg: any) => {
-        console.log('---', msg)
-        addMessageToChatAct(msg.msg);
-      });
-  
-      socketRef.current.on(EVENT_ONLINE_CLIENTS, ((data: any) => {
-        console.log('online clients:: ', data.onlines);
-        setOnlineClients(data.onlines);
-      }));
-    });
-
-    //socket.open();
-    //return () => socket.close();
+    //return () => socketRef.current.close();
   }, [location, authUser]);
 
   useEffect(() => {
+    if (socketio) {
+      console.log(authUser.id);
+      // name has to be message
+      socketio.addEventListener('open', () => {
+        console.log('connection is open!!');
+
+        // message to: SERVER
+        socketRef.current.send(JSON.stringify({msg: 'hello from client'}));
+        console.log('connection closed!')
+      });
+
+      // message from: SERVER
+      socketRef.current.addEventListener('message', handNewMessage);
+    
+      socketio.addEventListener('error', (error: any) => {
+        console.error('WebSocket Error:', error?.message || error);
+        // Your code for handling errors
+      });
+
+      socketio.addEventListener('close', (event: any) => {
+        console.log('WebSocket Connection is closed:', event.code, event.reason);
+        // Your code for handling connection closure
+      });
+    }
+  }, [socketio]);
+
+  /* useEffect(() => {
     setSocket(socketRef.current);
   }, [socketRef.current]);
-
+ */
   return (
     <>
     

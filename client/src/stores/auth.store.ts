@@ -84,6 +84,10 @@ const useAuthStore = create<any>((set: any, get: any) => ({
         // remove user from local storage
         localStorage.removeItem(USER);
         
+        set((s:any) => ({
+          ...s,
+          authUser: null,
+        }))
         // redirect to login page
         callback();
       } 

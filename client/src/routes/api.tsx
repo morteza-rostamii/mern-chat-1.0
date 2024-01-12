@@ -41,7 +41,7 @@ const api = {
   },
 
   // POST: /auth/login =: authenticate the magic-link
-  async login(token: string, callback: (data:any) => void): Promise<TLoginResponse | null> {
+  async login(token: string, callback: (data:any) => void): Promise<any> {
     try {
       const response = await axios.post(
         `${BASE}auth/login`, 
@@ -55,7 +55,7 @@ const api = {
       const {data} = response;
 
       console.log(response.data.success)
-      if (data.success) {
+      if (data?.success) {
         callback(data);
         console.log('----', data)
         return data;
@@ -64,9 +64,9 @@ const api = {
       }
 
     } catch(error: any) {
-      console.log(error || error?.message);
+      console.log(error?.message || error);
       //console.log(error?.response?.data);
-      return null;
+      //return null;
     }
   },
 

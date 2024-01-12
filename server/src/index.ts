@@ -11,6 +11,7 @@ import authRouter from './modules/auth/auth.routes'
 import path from 'path';
 import { CLIENT_SENT_MSG, CLIENT_URL, DEVELOPMENT, EVENT_ONLINE_CLIENTS, SERVER_SENT_MSG } from './consts/const';
 import { setupSocket } from './utils/socket';
+import { setupWebSocket } from './utils/webSocket';
 
 export const prisma = new PrismaClient();
 
@@ -71,7 +72,8 @@ function runNodeServer(prisma: any): void {
   server.on('listening', () => {
     console.log('node is here!!');
 
-    setupSocket(server, prisma);
+    //setupSocket(server, prisma);
+    setupWebSocket(server);
   });
 }
 

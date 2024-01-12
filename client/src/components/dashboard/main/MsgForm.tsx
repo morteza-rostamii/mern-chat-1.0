@@ -64,7 +64,7 @@ const MsgForm = () => {
 
     setLoading(true);
 
-    if (formData.image) {
+    /* if (formData.image) {
       const file: any = formData.image;
       const reader = new FileReader();
 
@@ -94,24 +94,20 @@ const MsgForm = () => {
 
       reader.readAsDataURL(file);
     } else {
-      msgFormData.append('text', formData.text);
-      msgFormData.append('senderId', authUser.id);
-      msgFormData.append('recipientId', currRecipient.id);
-  
-      await sendMessageAct(msgFormData);
-      setFormData({
-        text: '',
-        image: null,
-        emoji: '',
-      });
-      setLoading(false);
-      //console.log(msgFormData);
-    }
-    /* for (let key of msgFormData.entries()) {
-      console.log(key[0])
     } */
-    // can't just console.log formData
-    //console.log(formData)
+    
+    if (formData.image) msgFormData.append('image', formData.image);
+    msgFormData.append('text', formData.text);
+    msgFormData.append('senderId', authUser.id);
+    msgFormData.append('recipientId', currRecipient.id);
+
+    await sendMessageAct(msgFormData);
+    setFormData({
+      text: '',
+      image: null,
+      emoji: '',
+    });
+    setLoading(false);
   }
 
   useEffect(() => {
