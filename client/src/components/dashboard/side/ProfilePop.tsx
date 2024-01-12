@@ -18,10 +18,12 @@ import useAuthStore from '../../../stores/auth.store';
 import { AvatarComponent } from 'avatar-initials';
 import { useNavigate } from 'react-router';
 import { REGISTER_ROUTE } from '../../../consts/const';
+import useMsgStore from '../../../stores/msgs.store';
 
 const ProfilePop = () => {
   const { isOpen, onClose, onToggle } = useDisclosure();
   const {authUser, logoutAct} = useAuthStore();
+  const {socketio, setSocket} = useMsgStore();
   const navigate = useNavigate();
 
   function handLogout() {
@@ -30,6 +32,9 @@ const ProfilePop = () => {
     // logout
     logoutAct(() => {
       navigate(REGISTER_ROUTE);
+      // close socket
+      socketio.close();
+      setSocket(null);
     });
   }
 

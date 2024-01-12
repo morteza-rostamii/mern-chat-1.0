@@ -59,14 +59,14 @@ function App() {
   useEffect(() => {
 
     // if: not authUser and there is a socket -: remove socket
-    if (!authUser) {
+    /* if (!authUser) {
       if (socketRef.current) {
         socketRef.current.close();
         setSocket(null);
       }
 
       return;
-    }
+    } */
 
     if (socketRef?.current) return;
 
@@ -87,7 +87,6 @@ function App() {
 
         // message to: SERVER
         socketRef.current.send(JSON.stringify({msg: 'hello from client'}));
-        console.log('connection closed!')
       });
 
       // message from: SERVER
