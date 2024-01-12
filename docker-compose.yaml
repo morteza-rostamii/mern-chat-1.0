@@ -75,6 +75,7 @@ services:
       - VITE_API_URL=http://localhost:3001/
       - VITE_API_URL_PRO=http://51.222.209.98:3001/
       - VITE_CLIENT_URL_PRO=http://51.222.209.98:3002
+      - VITE_SOCK_URL_PRO=ws://51.222.209.98:3001
     networks:
       - app-network
       
